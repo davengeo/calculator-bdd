@@ -1,20 +1,29 @@
 package stepsdef;
 
 
+import cucumber.api.PendingException;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.PageFactory;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
 public class FirstSteps {
 
     private WebDriver driver;
+//    private HelloCalculatorPage helloCalculatorPage = null;
+//
+//    public HelloCalculatorPage getHelloCalculatorPage() {
+//        if (helloCalculatorPage==null) {
+//            this.helloCalculatorPage = PageFactory.initElements(driver, HelloCalculatorPage.class);
+//        }
+//        return this.helloCalculatorPage;
+//    }
 
     @Before
     public void setup() {
@@ -23,7 +32,6 @@ public class FirstSteps {
 
     @After
     public void close() throws InterruptedException {
-        Thread.sleep(500);
         driver.quit();
     }
 
@@ -33,17 +41,22 @@ public class FirstSteps {
         driver.get(website);
     }
 
-    @When("^I see the webpage$")
-    public void i_see_the_webpage() throws Throwable {
-        assertThat(driver.getTitle()).contains("hello");
+    @When("^I see the web page with title \"(.*?)\"$")
+    public void i_see_the_webpage_with_title(String expectedTitle) throws Throwable {
+        assertThat(driver.getTitle()).contains(expectedTitle);
     }
 
-    @Then("^I can read \"(.*?)\"$")
-    public void i_can_read(String arg1) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        HelloCalculatorPage page = PageFactory.
-                initElements(driver, HelloCalculatorPage.class);
-        assertThat(page.getFirstNumber().getAttribute("value")).isEqualTo("1");
+
+    @Then("^I can read \"(.*?)\" with an empty box named \"(.*?)\"$")
+    public void i_can_read_with_an_empty_box_named(String label, String inputName) throws Throwable {
+        assertThat(driver.findElement(By.className(inputName)).getText().toLowerCase()).contains(label);
+        assertThat(driver.findElement(By.name(inputName)).getAttribute("value")).isEmpty();
+    }
+
+    @Then("^I can read \"(.*?)\" followed by a number \"(.*?)\"$")
+    public void i_can_read_followed_by_a_number(String label, String result) throws Throwable {
+        assertThat(driver.findElement(By.className("result_label")).getText().toLowerCase()).contains(label);
+        assertThat(driver.findElement(By.className("result_value")).getText().toLowerCase()).isEqualTo(result);
     }
 
 }
