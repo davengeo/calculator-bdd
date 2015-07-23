@@ -1,11 +1,11 @@
-import cucumber.api.CucumberOptions;
-import cucumber.api.junit.Cucumber;
+import cucumber.junit.Cucumber;
 import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(
+@Cucumber.Options(
         format = { "pretty", "html:target/cucumber"},
-        features = "classpath:cucumber/calculator-hello.feature"
+        glue = {"stepsdef"},
+        features = "classpath:cucumber"
 )
 public class HelloWorldTest {
 }
